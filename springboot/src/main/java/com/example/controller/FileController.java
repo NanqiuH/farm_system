@@ -13,20 +13,20 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 /**
- * 文件相关操作接口
+ * FileController
  */
 @RestController
 @RequestMapping("/files")
 public class FileController {
 
-    // 表示本地磁盘文件的存储路径
+    // filePath
     private static final String filePath = System.getProperty("user.dir") + "/files/";
 
     @Value("${fileBaseUrl}")
     private String fileBaseUrl;
 
     /**
-     * 文件上传
+     * upload
      */
     @PostMapping("/upload")
     public Result upload(MultipartFile file) {
@@ -47,7 +47,7 @@ public class FileController {
     }
 
     /**
-     * 文件下载
+     * download
      */
     @GetMapping("/download/{fileName}")
     public void download(@PathVariable String fileName, HttpServletResponse response) {

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.GoodsMapper">
+
+    <select id="selectAll" parameterType="com.example.entity.Goods" resultType="com.example.entity.Goods">
+        select goods.*, category.name as categoryName from goods
+        left join category on goods.category_id = category.id
+        <where>
+            <if test="name != null"> and goods.name like concat('%', #{name}, '%')</if>
+            <if test="categoryId != null"> and goods.category_id = #{categoryId}</if>
+        </where>
+        order by goods.id desc
+    </select>
+
+
+
+    <insert id="insert" parameterType="com.example.entity.Goods" useGeneratedKeys="true">
+        insert into goods(id, name, img, descr, specials, price, unit, stock, category_id)
+        values (#{id}, #{name}, #{img}, #{descr}, #{specials}, #{price}, #{unit}, #{stock}, #{categoryId})
+    </insert>
+
+    <update id="updateById" parameterType="com.example.entity.Goods">
+        update goods set name = #{name}, img = #{img}, descr = #{descr}, specials = #{specials},
+                         price = #{price}, unit = #{unit}, stock = #{stock}, category_id = #{categoryId}
+        where id = #{id} 
+    </update>
+
+</mapper>

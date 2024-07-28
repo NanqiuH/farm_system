@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * 管理员业务处理
+ * Admin Service
  **/
 @Service
 public class AdminService {
@@ -22,12 +22,12 @@ public class AdminService {
     private AdminMapper adminMapper;
 
     /**
-     * 新增
+     * add
      */
     public void add(Admin admin) {
         Admin dbAdmin = adminMapper.selectByUsername(admin.getUsername());
         if (ObjectUtil.isNotNull(dbAdmin)) {
-            throw new CustomException("用户不存在");
+            throw new CustomException("The admin already exists");
         }
         if (ObjectUtil.isEmpty(admin.getPassword())) {
             admin.setPassword("admin");
@@ -40,35 +40,35 @@ public class AdminService {
     }
 
     /**
-     * 删除
+     * delete
      */
     public void deleteById(Integer id) {
         adminMapper.deleteById(id);
     }
 
     /**
-     * 修改
+     * update
      */
     public void updateById(Admin admin) {
         adminMapper.updateById(admin);
     }
 
     /**
-     * 根据ID查询
+     * select
      */
     public Admin selectById(Integer id) {
         return adminMapper.selectById(id);
     }
 
     /**
-     * 查询所有
+     * selectAll
      */
     public List<Admin> selectAll(Admin admin) {
         return adminMapper.selectAll(admin);
     }
 
     /**
-     * 分页查询
+     * selectPage
      */
     public PageInfo<Admin> selectPage(Admin admin, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
@@ -77,29 +77,29 @@ public class AdminService {
     }
 
     /**
-     * 登录
+     * login
      */
     public Account login(Account account) {
         Account dbAdmin = adminMapper.selectByUsername(account.getUsername());
         if (ObjectUtil.isNull(dbAdmin)) {
-            throw new CustomException("用户不存在");
+            throw new CustomException("The admin does not exist");
         }
         if (!account.getPassword().equals(dbAdmin.getPassword())) {
-            throw new CustomException("账号或密码错误");
+            throw new CustomException("The username or password is incorrect");
         }
         return dbAdmin;
     }
 
     /**
-     * 修改密码
+     * updatePassword
      */
     public void updatePassword(Account account) {
         Admin dbAdmin = adminMapper.selectByUsername(account.getUsername());
         if (ObjectUtil.isNull(dbAdmin)) {
-            throw new CustomException("用户不存在");
+            throw new CustomException("The admin does not exist");
         }
         if (!account.getPassword().equals(dbAdmin.getPassword())) {
-            throw new CustomException("原密码错误");
+            throw new CustomException("The password is incorrect");
         }
         dbAdmin.setPassword(account.getNewPassword());
         adminMapper.updateById(dbAdmin);

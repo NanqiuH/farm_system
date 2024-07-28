@@ -7,34 +7,34 @@ import org.apache.ibatis.annotations.Select;
 import java.util.List;
 
 /**
- * 操作admin相关数据接口
+ * AdminMapper
 */
 public interface AdminMapper {
 
     /**
-      * 新增
+      * insert
     */
     int insert(Admin admin);
 
     /**
-      * 删除
+      * delete
     */
     @Delete("delete from admin where id = #{id}")
     int deleteById(Integer id);
 
     /**
-      * 修改
+      * update
     */
     int updateById(Admin admin);
 
     /**
-      * 根据ID查询
+      * select
     */
     @Select("select * from admin where id = #{id}")
     Admin selectById(Integer id);
 
     /**
-      * 查询所有
+      * selectAll
     */
     List<Admin> selectAll(Admin admin);
 

@@ -1,8 +1,8 @@
 package com.example.controller;
 
 import com.example.common.Result;
-import com.example.entity.Admin;
-import com.example.service.AdminService;
+import com.example.entity.Orders;
+import com.example.service.OrdersService;
 import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
@@ -10,21 +10,21 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * AdminController
+ * Orders Controller
  **/
 @RestController
-@RequestMapping("/admin")
-public class AdminController {
+@RequestMapping("/orders")
+public class OrdersController {
 
     @Resource
-    private AdminService adminService;
+    private OrdersService ordersService;
 
     /**
      * add
      */
     @PostMapping("/add")
-    public Result add(@RequestBody Admin admin) {
-        adminService.add(admin);
+    public Result add(@RequestBody Orders orders) {
+        ordersService.add(orders);
         return Result.success();
     }
 
@@ -33,7 +33,7 @@ public class AdminController {
      */
     @DeleteMapping("/delete/{id}")
     public Result deleteById(@PathVariable Integer id) {
-        adminService.deleteById(id);
+        ordersService.deleteById(id);
         return Result.success();
     }
 
@@ -41,8 +41,8 @@ public class AdminController {
      * update
      */
     @PutMapping("/update")
-    public Result updateById(@RequestBody Admin admin) {
-        adminService.updateById(admin);
+    public Result updateById(@RequestBody Orders orders) {
+        ordersService.updateById(orders);
         return Result.success();
     }
 
@@ -51,16 +51,16 @@ public class AdminController {
      */
     @GetMapping("/selectById/{id}")
     public Result selectById(@PathVariable Integer id) {
-        Admin admin = adminService.selectById(id);
-        return Result.success(admin);
+        Orders orders = ordersService.selectById(id);
+        return Result.success(orders);
     }
 
     /**
      * selectAll
      */
     @GetMapping("/selectAll")
-    public Result selectAll(Admin admin) {
-        List<Admin> list = adminService.selectAll(admin);
+    public Result selectAll(Orders orders) {
+        List<Orders> list = ordersService.selectAll(orders);
         return Result.success(list);
     }
 
@@ -68,10 +68,10 @@ public class AdminController {
      * selectPage
      */
     @GetMapping("/selectPage")
-    public Result selectPage(Admin admin,
+    public Result selectPage(Orders orders,
                              @RequestParam(defaultValue = "1") Integer pageNum,
                              @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageInfo<Admin> page = adminService.selectPage(admin, pageNum, pageSize);
+        PageInfo<Orders> page = ordersService.selectPage(orders, pageNum, pageSize);
         return Result.success(page);
     }
 

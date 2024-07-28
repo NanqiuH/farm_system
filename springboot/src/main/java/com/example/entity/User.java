@@ -1,9 +1,9 @@
 package com.example.entity;
 
 /**
- * Admin
+ * User
 */
-public class Admin extends Account {
+public class User extends Account {
 
     /** ID */
     private Integer id;
@@ -17,6 +17,12 @@ public class Admin extends Account {
     private String avatar;
     /** role */
     private String role;
+    /** sex */
+    private String sex;
+    /** phone */
+    private String phone;
+    /** email */
+    private String email;
 
     @Override
     public Integer getId() {
@@ -76,5 +82,29 @@ public class Admin extends Account {
     @Override
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

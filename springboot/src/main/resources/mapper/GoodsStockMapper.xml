@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.GoodsStockMapper">
+
+    <select id="selectAll" resultType="com.example.entity.GoodsStock">
+        select goods_stock.*, goods.name as goodsName from goods_stock
+        left join goods on goods_stock.goods_id = goods.id
+        <where>
+            <if test="goodsName != null"> and goods.name like concat('%', #{goodsName}, '%')</if>
+        </where>
+    </select>
+
+    <insert id="insert" parameterType="com.example.entity.GoodsStock" useGeneratedKeys="true">
+        insert into goods_stock(id, goods_id, num, channel, date, comment)
+        values (#{id}, #{goodsId}, #{num}, #{channel}, #{date}, #{comment})
+    </insert>
+
+    <update id="updateById" parameterType="com.example.entity.GoodsStock">
+        update goods_stock set goods_id = #{goodsId}, num = #{num}, channel = #{channel}, date = #{date}, comment = #{comment}
+        where id = #{id} 
+    </update>
+
+</mapper>
