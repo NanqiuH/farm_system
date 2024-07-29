@@ -2,10 +2,10 @@
   <div>
 
     <div class="card" style="margin-bottom: 5px;">
-      <el-input v-model="data.name" style="width: 300px; margin-right: 10px"
-                placeholder="Please search by name"></el-input>
-      <el-button type="primary" @click="load">Search</el-button>
-      <el-button type="info" style="margin: 0 10px" @click="reset">Reset</el-button>
+      <el-input v-model="data.goodsName" style="width: 300px; margin-right: 10px"
+                placeholder="Please search by goods Name"></el-input>
+      <el-button type="primary" @click="load">search</el-button>
+      <el-button type="info" style="margin: 0 10px" @click="reset">reset</el-button>
     </div>
 
     <div class="card" style="margin-bottom: 5px">
@@ -13,19 +13,12 @@
         <el-button type="primary" @click="handleAdd">Add</el-button>
       </div>
       <el-table :data="data.tableData" stripe>
-        <el-table-column label="Username" prop="username"></el-table-column>
-        <el-table-column label="Name" prop="name"></el-table-column>
-        <el-table-column label="Avatar">
-          <template #default="scope">
-            <el-image :src="scope.row.avatar" style="width: 40px; height: 40px; border-radius: 50%"></el-image>
-          </template>
-        </el-table-column>
-        <el-table-column label="Role" prop="role">
-          <template #default="scope">
-            <span v-if="scope.row.role === 'ADMIN'">Admin</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="Manipulate" align="center" width="160">
+        <el-table-column label="Name" prop="goodsName"></el-table-column>
+        <el-table-column label="Number" prop="num"></el-table-column>
+        <el-table-column label="Channel" prop="channel"></el-table-column>
+        <el-table-column label="Date" prop="date"></el-table-column>
+        <el-table-column label="Comment" prop="comment"></el-table-column>
+        <el-table-column label="Manipulate" header-align="center" width="200">
           <template #default="scope">
             <el-button type="primary" @click="handleEdit(scope.row)">Edit</el-button>
             <el-button type="danger" @click="handleDelete(scope.row.id)">Delete</el-button>
@@ -39,26 +32,39 @@
                      v-model:current-page="data.pageNum" :total="data.total"/>
     </div>
 
-    <el-dialog title="Information" width="40%" v-model="data.formVisible" :close-on-click-modal="false"
+    <el-dialog title="Purchase Information" width="40%" v-model="data.formVisible" :close-on-click-modal="false"
                destroy-on-close>
       <el-form :model="data.form" label-width="100px" style="padding-right: 50px">
-        <el-form-item label="Avatar" prop="avatar">
-          <el-upload :action="uploadUrl" list-type="picture" :on-success="handleImgSuccess">
-            <el-button type="primary">Upload Image</el-button>
-          </el-upload>
+        <el-form-item label="Goods Name" prop="goodsName">
+          <el-select v-model="data.form.goodsId" placeholder="Select the goods" style="width: 100%">
+            <el-option
+                v-for="item in data.goodsList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+            />
+          </el-select>
         </el-form-item>
-        <el-form-item label="Username" prop="username">
-          <el-input v-model="data.form.username" autocomplete="off"/>
+        <el-form-item label="Number" prop="num">
+          <el-input-number :min="1" v-model="data.form.num"/>
         </el-form-item>
-        <el-form-item label="Name" prop="name">
-          <el-input v-model="data.form.name" autocomplete="off"/>
+        <el-form-item label="Channel" prop="channel">
+          <el-input v-model="data.form.channel" placeholder="Please enter your purchase channel"/>
+        </el-form-item>
+        <el-form-item label="Date" prop="date">
+          <el-date-picker type="date" style="width: 100%;" v-model="data.form.date"
+                          placeholder="Please select your purchase date"
+                          format="YYYY-MM-DD" value-format="YYYY-MM-DD"></el-date-picker>
+        </el-form-item>
+        <el-form-item label="Comment" prop="comment">
+          <el-input v-model="data.form.comment" placeholder="Please enter your comment"/>
         </el-form-item>
       </el-form>
       <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="data.formVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="save">Save</el-button>
-      </span>
+        <span class="dialog-footer">
+          <el-button @click="data.formVisible = false">Cancel</el-button>
+          <el-button type="primary" @click="save">Save</el-button>
+        </span>
       </template>
     </el-dialog>
 
@@ -79,15 +85,20 @@ const data = reactive({
   formVisible: false,
   form: {},
   tableData: [],
-  name: null
+  goodsName: null,
+  goodsList: []
+})
+
+request.get('/goods/selectAll').then(res => {
+  data.goodsList = res.data
 })
 
 const load = () => {
-  request.get('/admin/selectPage', {
+  request.get('/goodsStock/selectPage', {
     params: {
       pageNum: data.pageNum,
       pageSize: data.pageSize,
-      name: data.name
+      goodsName: data.goodsName
     }
   }).then(res => {
     data.tableData = res.data?.list
@@ -106,7 +117,7 @@ const handleEdit = (row) => {
 }
 
 const add = () => {
-  request.post('/admin/add', data.form).then(res => {
+  request.post('/goodsStock/add', data.form).then(res => {
     if (res.code === '200') {
       load()
       ElMessage.success('The operation is successful.')
@@ -117,9 +128,8 @@ const add = () => {
   })
 }
 
-// 编辑保存
 const update = () => {
-  request.put('/admin/update', data.form).then(res => {
+  request.put('/goodsStock/update', data.form).then(res => {
     if (res.code === '200') {
       load()
       ElMessage.success('The operation is successful.')
@@ -137,7 +147,7 @@ const save = () => {
 const handleDelete = (id) => {
   ElMessageBox.confirm('The data cannot be recovered after deletion, are you sure about the deletion?',
       'Delete', {type: 'warning'}).then(res => {
-    request.delete('/admin/delete/' + id).then(res => {
+    request.delete('/goodsStock/delete/' + id).then(res => {
       if (res.code === '200') {
         load()
         ElMessage.success('The operation is successful.')
@@ -150,7 +160,7 @@ const handleDelete = (id) => {
 }
 
 const reset = () => {
-  data.name = null
+  data.goodsName = null
   load()
 }
 

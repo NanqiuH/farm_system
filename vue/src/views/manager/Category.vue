@@ -4,8 +4,8 @@
     <div class="card" style="margin-bottom: 5px;">
       <el-input v-model="data.name" style="width: 300px; margin-right: 10px"
                 placeholder="Please search by name"></el-input>
-      <el-button type="primary" @click="load">Search</el-button>
-      <el-button type="info" style="margin: 0 10px" @click="reset">Reset</el-button>
+      <el-button type="primary" @click="load">search</el-button>
+      <el-button type="info" style="margin: 0 10px" @click="reset">reset</el-button>
     </div>
 
     <div class="card" style="margin-bottom: 5px">
@@ -13,19 +13,8 @@
         <el-button type="primary" @click="handleAdd">Add</el-button>
       </div>
       <el-table :data="data.tableData" stripe>
-        <el-table-column label="Username" prop="username"></el-table-column>
         <el-table-column label="Name" prop="name"></el-table-column>
-        <el-table-column label="Avatar">
-          <template #default="scope">
-            <el-image :src="scope.row.avatar" style="width: 40px; height: 40px; border-radius: 50%"></el-image>
-          </template>
-        </el-table-column>
-        <el-table-column label="Role" prop="role">
-          <template #default="scope">
-            <span v-if="scope.row.role === 'ADMIN'">Admin</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="Manipulate" align="center" width="160">
+        <el-table-column label="Manipulate" header-align="center" width="200">
           <template #default="scope">
             <el-button type="primary" @click="handleEdit(scope.row)">Edit</el-button>
             <el-button type="danger" @click="handleDelete(scope.row.id)">Delete</el-button>
@@ -39,26 +28,18 @@
                      v-model:current-page="data.pageNum" :total="data.total"/>
     </div>
 
-    <el-dialog title="Information" width="40%" v-model="data.formVisible" :close-on-click-modal="false"
+    <el-dialog title="Category Information" width="40%" v-model="data.formVisible" :close-on-click-modal="false"
                destroy-on-close>
       <el-form :model="data.form" label-width="100px" style="padding-right: 50px">
-        <el-form-item label="Avatar" prop="avatar">
-          <el-upload :action="uploadUrl" list-type="picture" :on-success="handleImgSuccess">
-            <el-button type="primary">Upload Image</el-button>
-          </el-upload>
-        </el-form-item>
-        <el-form-item label="Username" prop="username">
-          <el-input v-model="data.form.username" autocomplete="off"/>
-        </el-form-item>
         <el-form-item label="Name" prop="name">
           <el-input v-model="data.form.name" autocomplete="off"/>
         </el-form-item>
       </el-form>
       <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="data.formVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="save">Save</el-button>
-      </span>
+        <span class="dialog-footer">
+          <el-button @click="data.formVisible = false">Cancel</el-button>
+          <el-button type="primary" @click="save">Save</el-button>
+        </span>
       </template>
     </el-dialog>
 
@@ -83,7 +64,7 @@ const data = reactive({
 })
 
 const load = () => {
-  request.get('/admin/selectPage', {
+  request.get('/category/selectPage', {
     params: {
       pageNum: data.pageNum,
       pageSize: data.pageSize,
@@ -106,7 +87,7 @@ const handleEdit = (row) => {
 }
 
 const add = () => {
-  request.post('/admin/add', data.form).then(res => {
+  request.post('/category/add', data.form).then(res => {
     if (res.code === '200') {
       load()
       ElMessage.success('The operation is successful.')
@@ -117,9 +98,8 @@ const add = () => {
   })
 }
 
-// 编辑保存
 const update = () => {
-  request.put('/admin/update', data.form).then(res => {
+  request.put('/category/update', data.form).then(res => {
     if (res.code === '200') {
       load()
       ElMessage.success('The operation is successful.')
@@ -137,7 +117,7 @@ const save = () => {
 const handleDelete = (id) => {
   ElMessageBox.confirm('The data cannot be recovered after deletion, are you sure about the deletion?',
       'Delete', {type: 'warning'}).then(res => {
-    request.delete('/admin/delete/' + id).then(res => {
+    request.delete('/category/delete/' + id).then(res => {
       if (res.code === '200') {
         load()
         ElMessage.success('The operation is successful.')

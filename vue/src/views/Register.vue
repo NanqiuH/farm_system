@@ -1,23 +1,23 @@
 <template>
   <div class="login-container">
     <div class="login-box">
-      <div style="font-weight: bold; font-size: 24px; text-align: center; margin-bottom: 30px; color: #1450aa">欢 迎 注 册</div>
+      <div style="font-weight: bold; font-size: 24px; text-align: center; margin-bottom: 30px; color: #1450aa">Welcome</div>
       <el-form :model="data.form"  ref="formRef" :rules="data.rules">
         <el-form-item prop="username">
-          <el-input :prefix-icon="User" size="large" v-model="data.form.username" placeholder="请输入账号" />
+          <el-input :prefix-icon="User" size="large" v-model="data.form.username" placeholder="Please enter your username" />
         </el-form-item>
         <el-form-item prop="password">
-          <el-input :prefix-icon="Lock" size="large" v-model="data.form.password" placeholder="请输入密码" show-password />
+          <el-input :prefix-icon="Lock" size="large" v-model="data.form.password" placeholder="Please enter your password" show-password />
         </el-form-item>
         <el-form-item prop="confirmPassword">
-          <el-input :prefix-icon="Lock" size="large" v-model="data.form.confirmPassword" placeholder="请确认密码" show-password />
+          <el-input :prefix-icon="Lock" size="large" v-model="data.form.confirmPassword" placeholder="Please confirm your password" show-password />
         </el-form-item>
         <el-form-item>
-          <el-button size="large" type="primary" style="width: 100%" @click="register">注 册</el-button>
+          <el-button size="large" type="primary" style="width: 100%" @click="register">Register</el-button>
         </el-form-item>
       </el-form>
       <div style="text-align: right;">
-        还没有账号？请 <a href="/login">登录</a>
+        If you already have an account, please <a href="/login">login in</a>
       </div>
     </div>
 
@@ -33,9 +33,9 @@
 
   const validatePass = (rule, value, callback) => {
     if (!value) {
-      callback(new Error('请确认密码'))
+      callback(new Error('Please confirm your password'))
     } else if (value !== data.form.password) {
-      callback(new Error('两次输入密码不一致'))
+      callback(new Error('Inconsistency between two passwords'))
     } else {
       callback()
     }
@@ -45,10 +45,10 @@
     form: { role: 'USER' },
     rules: {
       username: [
-        { required: true, message: '请输入账号', trigger: 'blur' },
+        { required: true, message: 'Username', trigger: 'blur' },
       ],
       password: [
-        { required: true, message: '请输入密码', trigger: 'blur' },
+        { required: true, message: 'Password', trigger: 'blur' },
       ],
       confirmPassword: [
         { validator: validatePass, trigger: 'blur' },
@@ -59,14 +59,12 @@
 
   const formRef = ref()
 
-  // 点击注册按钮的时候会触发这个方法
   const register = () => {
     formRef.value.validate((valid => {
       if (valid) {
-        // 调用后台的接口
         request.post('/register', data.form).then(res => {
           if (res.code === '200') {
-            ElMessage.success("注册成功")
+            ElMessage.success("Success!")
             router.push('/login')
           } else {
             ElMessage.error(res.msg)
@@ -87,8 +85,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(to bottom, #a8c0ff, #3f2b96);
+  background-image: url('@/assets/imgs/bg.png');
   background-size: cover;
+  background-position: center -150px;
 }
 .login-box {
   width: 350px;

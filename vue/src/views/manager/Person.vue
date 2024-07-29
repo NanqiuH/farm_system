@@ -4,18 +4,34 @@
       <el-form :model="data.user" label-width="100px" style="padding-right: 50px">
         <div style="margin: 20px 0; text-align: center">
           <el-upload :show-file-list="false" class="avatar-uploader" :action="uploadUrl" :on-success="handleFileUpload">
-            <img v-if="data.user.avatar" :src="data.user.avatar" class="avatar" />
-            <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+            <img v-if="data.user.avatar" :src="data.user.avatar" class="avatar"/>
+            <el-icon v-else class="avatar-uploader-icon">
+              <Plus/>
+            </el-icon>
           </el-upload>
         </div>
-        <el-form-item label="账号">
-          <el-input disabled v-model="data.user.username" autocomplete="off" />
+        <el-form-item label="Username">
+          <el-input disabled v-model="data.user.username" autocomplete="off"/>
         </el-form-item>
-        <el-form-item label="名称">
-          <el-input v-model="data.user.name" autocomplete="off" />
+        <el-form-item label="Name">
+          <el-input v-model="data.user.name" autocomplete="off"/>
         </el-form-item>
+        <div v-if="data.user.role === 'USER'">
+          <el-form-item label="Sex" prop="sex">
+            <el-radio-group v-model="data.user.sex">
+              <el-radio label="Male"></el-radio>
+              <el-radio label="Female"></el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="Phone" prop="phone">
+            <el-input v-model="data.user.phone" autocomplete="off"/>
+          </el-form-item>
+          <el-form-item label="Email" prop="Email">
+            <el-input v-model="data.user.email" autocomplete="off"/>
+          </el-form-item>
+        </div>
         <div style="text-align: center">
-          <el-button type="primary" @click="save">保存</el-button>
+          <el-button type="primary" @click="save">Save</el-button>
         </div>
       </el-form>
     </div>
@@ -27,7 +43,6 @@ import {reactive} from "vue"
 import request from "@/utils/request";
 import {ElMessage} from "element-plus";
 
-// 文件上传的接口地址
 const uploadUrl = import.meta.env.VITE_BASE_URL + '/files/upload'
 
 const data = reactive({
@@ -39,13 +54,21 @@ const handleFileUpload = (file) => {
 }
 
 const emit = defineEmits(["updateUser"])
-// 把当前修改的用户信息存储到后台数据库
 const save = () => {
   if (data.user.role === 'ADMIN') {
     request.put('/admin/update', data.user).then(res => {
       if (res.code === '200') {
-        ElMessage.success('更新成功')
-        //把更新后的用户信息存储到缓存
+        ElMessage.success('The update is successful')
+        localStorage.setItem('system-user', JSON.stringify(data.user))
+        emit('updateUser')
+      } else {
+        ElMessage.error(res.msg)
+      }
+    })
+  } else {
+    request.put('/user/update', data.user).then(res => {
+      if (res.code === '200') {
+        ElMessage.success('The update is successful')
         localStorage.setItem('system-user', JSON.stringify(data.user))
         emit('updateUser')
       } else {
